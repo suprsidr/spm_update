@@ -34,8 +34,8 @@ app.on("ready", () => {
   setApplicationMenu();
 
   const mainWindow = createWindow("main", {
-    width: 1000,
-    height: 600
+    width: 600,
+    height: 694
   });
 
   mainWindow.loadURL(
@@ -47,7 +47,7 @@ app.on("ready", () => {
   );
 
   if (env.name === "development") {
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
   }
 });
 

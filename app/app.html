@@ -1,27 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>Electron Boilerplate</title>
+  <title>SPM Transmitters/Receivers</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/main.css" type="text/css" />
+  <script src="js/jquery-2.1.1.min.js"></script>
 </head>
+
 <body>
-
-  <div id="app" class="container" style="display: none;">
-    <h1 id="greet"></h1>
-    <p>
-      Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this <strong id="os"></strong> machine.
-    </p>
-    <p>
-      App author: <strong id="author"></strong>
-    </p>
-    <p>
-      Environment: <strong id="env"></strong>
-    </p>
-    <p>
-      Electron version: <strong id="electron-version"></strong>
-    </p>
+  <svg display="none" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+      <symbol id="icon-cogs" viewBox="0 0 1024 1024">
+        <title>cogs</title>
+        <path class="path1"
+          d="M363.722 722.052l41.298-57.816-45.254-45.256-57.818 41.296c-10.722-5.994-22.204-10.774-34.266-14.192l-11.682-70.084h-64l-11.68 70.086c-12.062 3.418-23.544 8.198-34.266 14.192l-57.818-41.298-45.256 45.256 41.298 57.816c-5.994 10.72-10.774 22.206-14.192 34.266l-70.086 11.682v64l70.086 11.682c3.418 12.060 8.198 23.544 14.192 34.266l-41.298 57.816 45.254 45.256 57.818-41.296c10.722 5.994 22.204 10.774 34.266 14.192l11.682 70.084h64l11.68-70.086c12.062-3.418 23.544-8.198 34.266-14.192l57.818 41.296 45.254-45.256-41.298-57.816c5.994-10.72 10.774-22.206 14.192-34.266l70.088-11.68v-64l-70.086-11.682c-3.418-12.060-8.198-23.544-14.192-34.266zM224 864c-35.348 0-64-28.654-64-64s28.652-64 64-64 64 28.654 64 64-28.652 64-64 64zM1024 384v-64l-67.382-12.25c-1.242-8.046-2.832-15.978-4.724-23.79l57.558-37.1-24.492-59.128-66.944 14.468c-4.214-6.91-8.726-13.62-13.492-20.13l39.006-56.342-45.256-45.254-56.342 39.006c-6.512-4.766-13.22-9.276-20.13-13.494l14.468-66.944-59.128-24.494-37.1 57.558c-7.812-1.892-15.744-3.482-23.79-4.724l-12.252-67.382h-64l-12.252 67.382c-8.046 1.242-15.976 2.832-23.79 4.724l-37.098-57.558-59.128 24.492 14.468 66.944c-6.91 4.216-13.62 8.728-20.13 13.494l-56.342-39.006-45.254 45.254 39.006 56.342c-4.766 6.51-9.278 13.22-13.494 20.13l-66.944-14.468-24.492 59.128 57.558 37.1c-1.892 7.812-3.482 15.742-4.724 23.79l-67.384 12.252v64l67.382 12.25c1.242 8.046 2.832 15.978 4.724 23.79l-57.558 37.1 24.492 59.128 66.944-14.468c4.216 6.91 8.728 13.618 13.494 20.13l-39.006 56.342 45.254 45.256 56.342-39.006c6.51 4.766 13.22 9.276 20.13 13.492l-14.468 66.944 59.128 24.492 37.102-57.558c7.81 1.892 15.742 3.482 23.788 4.724l12.252 67.384h64l12.252-67.382c8.044-1.242 15.976-2.832 23.79-4.724l37.1 57.558 59.128-24.492-14.468-66.944c6.91-4.216 13.62-8.726 20.13-13.492l56.342 39.006 45.256-45.256-39.006-56.342c4.766-6.512 9.276-13.22 13.492-20.13l66.944 14.468 24.492-59.13-57.558-37.1c1.892-7.812 3.482-15.742 4.724-23.79l67.382-12.25zM672 491.2c-76.878 0-139.2-62.322-139.2-139.2s62.32-139.2 139.2-139.2 139.2 62.322 139.2 139.2c0 76.878-62.32 139.2-139.2 139.2z">
+        </path>
+      </symbol>
+      <symbol id="icon-info" viewBox="0 0 1024 1024">
+        <title>info</title>
+        <path class="path1"
+          d="M448 304c0-26.4 21.6-48 48-48h32c26.4 0 48 21.6 48 48v32c0 26.4-21.6 48-48 48h-32c-26.4 0-48-21.6-48-48v-32z">
+        </path>
+        <path class="path2" d="M640 768h-256v-64h64v-192h-64v-64h192v256h64z"></path>
+        <path class="path3"
+          d="M512 0c-282.77 0-512 229.23-512 512s229.23 512 512 512 512-229.23 512-512-229.23-512-512-512zM512 928c-229.75 0-416-186.25-416-416s186.25-416 416-416 416 186.25 416 416-186.25 416-416 416z">
+        </path>
+      </symbol>
+    </defs>
+  </svg>
+  <div class="fixed" style="-webkit-app-region: drag">
+    <div class="row">
+      <div class="large-12 columns text-left">
+        <!-- <a class="x-closer" style="-webkit-app-region: no-drag">&#215;</a> -->
+        <img src="img/logo.png" alt="" />
+        <p></p>
+      </div>
+    </div>
   </div>
-
-  <script src="app.js"></script>
+  <div id="content">
+    <div class="row settings">
+      <div class="small-12 columns">
+        <a class="settings-closer" style="float:right">&#215;</a>
+        <h2 style="display:inline-block">Transmitter Settings</h2>
+      </div>
+      <div class="small-12 columns transmitters"></div>
+      <div class="small-12 columns">
+        <a title="Show Dev Tools" style="margin-left: 1rem;" class="x-cogs">
+          <svg class="icon icon-cogs">
+            <use xlink:href="#icon-cogs"></use>
+          </svg>
+        </a>
+        <button id="save-settings">Save</button>
+      </div>
+    </div>
+    <div id="info" class="row">
+      <div class="small-12 columns">
+        <a class="info-closer" style="float:right">&#215;</a>
+        <h2 style="display:inline-block">Info</h2>
+        <ul>
+          <li>
+            <p><i>What do you need to do with setups.json and srd.json?</i></p>
+          </li>
+          <li>
+            <p>These need to be saved in your TFS directory $/WebSphere/HHWorkspace/StaticCMSContent/media/scripts/</p>
+            <p>This means that you will need to check these files out, then check them back in afterwards.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <form>
+      <div class="row">
+        <div class="large-12 columns">
+          <label for="receiverFilesPath">Path to Receiver SRD/SRM files:</label>
+          <input id="receiverFilesPath" type="text" />
+        </div>
+        <div class="large-12 columns">
+          <a style="font-size: 80%; line-height: 1;transform: translateY(5px);" href="transmitters">Transmitter
+            Settings</a>
+          <label for="transmitterFilesPath">Path to Transmitter SPM/SRM files:</label>
+          <input id="transmitterFilesPath" type="text" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="large-6 columns checks">
+          <label>Save files to:</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="large-12 columns">
+          <label>Result: <textarea id="thetext"></textarea> </label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="large-12 columns text-left">
+          <button id="go">Go</button>
+          <p class="savers">
+            <a title="Info" class="x-info">
+              <svg class="icon icon-info">
+                <use xlink:href="#icon-info"></use>
+              </svg>
+            </a>
+            <a style="display:none;" href="setups">Save setups.json locally</a><br>
+            <a style="display:none;" href="srd">Save srd.json locally</a>
+          </p>
+          <input id="setups" type="file" nwsaveas="setups.json" style="display:none" accept="application/json" />
+          <input id="srd" type="file" nwsaveas="srd.json" style="display:none" accept="application/json" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <script src="js/jquery-2.1.1.min.js"></script>
+  <script src="js/spin.min.js"></script>
+  <script src="js/foundation.min.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>

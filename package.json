@@ -31,7 +31,12 @@
     "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
-    "fs-jetpack": "^2.1.0"
+    "fs-jetpack": "^2.1.0",
+    "async": "^1.5.0",
+    "node-zip-dir": "^1.0.2",
+    "walkr": "^0.0.3",
+    "bufferhelper": "^0.2.1",
+    "iconv-lite": "^0.4.13"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
