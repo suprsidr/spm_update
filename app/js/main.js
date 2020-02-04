@@ -208,6 +208,7 @@ function walkFiles() {
     .start(function(err) {  // this acts more like a complete than start - but also triggers execution??
 
       log('zipping: ' + settings.dirs[idx]);
+      log(settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip');
 
   	  zipper.zip(settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip').then(function() {
 
