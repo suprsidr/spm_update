@@ -438,6 +438,8 @@ function walkSrdFiles() {
 
       log('All Done');
     });
+    
+    log(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip');
 
     zipper.zip(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip').then(function () {
       savePaths.forEach(function (path) {
