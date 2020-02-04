@@ -95,17 +95,17 @@ function copy(source, target, cb) {
 fs.readFile(LOCALAPPDATA + '/spm_settings.json', 'utf-8', function (err, contents) {
   if(err || contents === '') {
     settings = {
-      receiverFilesPath: '//marketing/internal/Market Share/Spektrum SRD Files for Upload/',
-	    transmitterFilesPath: '//marketing/internal/Market Share/Spektrum SPM Files for Upload/',
-      savePaths: ['//deviis/ProdInfo/Files/', '//testiis/websites/ProdInfo/Files/', '//cmp02-web01-tst/websites/prodinfo/Files/', '//cmp02-nexus01/websites/prodinfo/Files/'],
+      receiverFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SRD Files for Upload/',
+	    transmitterFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SPM Files for Upload/',
+      savePaths: ['//cmp02-web01-dev/websites/prodinfo/Files', '//CMP02-WEB01-TST/websites/prodinfo/Files', '//cmp02-web01-tst/websites/prodinfo/Files/', '//cmp02-nexus01/websites/prodinfo/Files/'],
       exts: ['spm','srm','srd'],
       //tfsPath: 'C:\\\\xampp\\htdocs\\StaticCMSContent\\media\\scripts\\',
       dirs: ['DX7s_Setups', 'DX8_Setups', 'DXe_Setups', 'Gen2_Setups'],
       transmitters: {
         DX7s_Setups: ['SPM7800'],
         DX8_Setups: ['SPM8800', 'SPMR8810'],
-        DXe_Setups: ['SPM1000', 'SPMR1000'],
-        Gen2_Setups: ['SPM6700', 'SPMR6700', 'SPM7000', 'SPM9900', 'SPMR9900', 'SPM18000', 'SPM18800', 'SPM18100', 'SPM18200']
+        DXe_Setups: ['SPM1000','SPMR1000','SPM1005'],
+        Gen2_Setups: ['SPM20000','SPM18100','SPM18000','SPM9900','SPMR9900','SPMR9910','SPM8000','SPM18800','SPM2800US','SPM18200','SPMR8800','SPM6700','SPM6750','SPMR6750','SPMR6700','SPM6650','SPMR6650','SPMR12000','SPM12000','SPMR12000O','SPMR12000Y','SPMR12000W','SPMR12000G','SPMR12000LB','SPMR12000R','SPMR8100','SPMR8000','SPM8015','SPM6755','SPMR20100','SPMR8105','SPMR6655']
       },
       filesCopied: {}
     };
