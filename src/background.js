@@ -35,7 +35,10 @@ app.on("ready", () => {
 
   const mainWindow = createWindow("main", {
     width: 600,
-    height: 694
+    height: 694,
+    webPreferences: {
+      nodeIntegration: true
+    }
   });
 
   mainWindow.loadURL(

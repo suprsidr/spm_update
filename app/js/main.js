@@ -7,7 +7,7 @@ var fs = require('fs'),
     path = require('path'),
     async = require("async"),
     exec = require('child_process').execFile,
-    zipper = require('node-zip-dir'),
+    archiver = require('archiver'),
     version = require(path.join(process.cwd(), 'package.json')).version,
     LOCALAPPDATA = path.join(process.env.LOCALAPPDATA, 'SPM_JSON');
 
@@ -95,17 +95,17 @@ function copy(source, target, cb) {
 fs.readFile(LOCALAPPDATA + '/spm_settings.json', 'utf-8', function (err, contents) {
   if(err || contents === '') {
     settings = {
-      receiverFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SRD Files for Upload/',
-	    transmitterFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SPM Files for Upload/',
-      savePaths: ['//cmp02-web01-dev/websites/prodinfo/Files', '//CMP02-WEB01-TST/websites/prodinfo/Files', '//cmp02-web01-tst/websites/prodinfo/Files/', '//cmp02-nexus01/websites/prodinfo/Files/'],
+      receiverFilesPath: 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SRD Files for Upload/',
+      transmitterFilesPath: 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/',
+      savePaths: ['C:/Users/wayne.patterson/Downloads/forWayne'],
       exts: ['spm','srm','srd'],
       //tfsPath: 'C:\\\\xampp\\htdocs\\StaticCMSContent\\media\\scripts\\',
-      dirs: ['DX7s_Setups', 'DX8_Setups', 'DXe_Setups', 'Gen2_Setups'],
+      dirs: ['DX8_Setups', 'DXe_Setups', 'Gen2_Setups'],
       transmitters: {
         DX7s_Setups: ['SPM7800'],
         DX8_Setups: ['SPM8800', 'SPMR8810'],
-        DXe_Setups: ['SPM1000','SPMR1000','SPM1005'],
-        Gen2_Setups: ['SPM20000','SPM18100','SPM18000','SPM9900','SPMR9900','SPMR9910','SPM8000','SPM18800','SPM2800US','SPM18200','SPMR8800','SPM6700','SPM6750','SPMR6750','SPMR6700','SPM6650','SPMR6650','SPMR12000','SPM12000','SPMR12000O','SPMR12000Y','SPMR12000W','SPMR12000G','SPMR12000LB','SPMR12000R','SPMR8100','SPMR8000','SPM8015','SPM6755','SPMR20100','SPMR8105','SPMR6655']
+        DXe_Setups: ['SPM1000', 'SPMR1000', 'SPM1005'],
+        Gen2_Setups: ['SPM20000', 'SPM18100', 'SPM18000', 'SPM9900', 'SPMR9900', 'SPMR9910', 'SPM8000', 'SPM18800', 'SPM2800US', 'SPM18200', 'SPMR8800', 'SPM6700', 'SPM6750', 'SPMR6750', 'SPMR6700', 'SPM6650', 'SPMR6650', 'SPMR12000', 'SPM12000', 'SPMR12000O', 'SPMR12000Y', 'SPMR12000W', 'SPMR12000G', 'SPMR12000LB', 'SPMR12000R', 'SPMR8100', 'SPMR8000', 'SPM8015', 'SPM6755', 'SPMR20100', 'SPMR8105', 'SPMR6655']
       },
       filesCopied: {}
     };
@@ -167,7 +167,7 @@ function walkFiles() {
   walkr(settings.transmitterFilesPath + settings.dirs[idx])
     .on('file', function (file) {
       var nameParts = file.name.split('.');
-      if(settings.exts.indexOf(nameParts[nameParts.length - 1].toLowerCase()) > -1) {
+      if(settings.exts.includes(nameParts[nameParts.length - 1].toLowerCase())) {
         var t = 'File found: ' + file.name;
         /**
          * we use the segments of the file.source to buld our object
@@ -208,9 +208,9 @@ function walkFiles() {
     .start(function(err) {  // this acts more like a complete than start - but also triggers execution??
 
       log('zipping: ' + settings.dirs[idx]);
-      log(settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip');
+      console.log('213', settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip');
 
-  	  zipper.zip(settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip').then(function() {
+      zipper.zip('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups', 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups.zip').then(function() {
 
         log(settings.dirs[idx] + '.zip created');
 
@@ -307,6 +307,7 @@ function walkFiles() {
           });
   		  }
   	  }).catch(function(err) {
+        spinner.spin(false);
   		  log('error zipping catch: ' + err);
   	  });
 
@@ -438,7 +439,7 @@ function walkSrdFiles() {
 
       log('All Done');
     });
-    
+
     log(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip');
 
     zipper.zip(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip').then(function () {
@@ -452,6 +453,7 @@ function walkSrdFiles() {
         });
       });
     }).catch(function (err) {
+      spinner.spin(false);
       log('line 447 error: ' + err);
     });
     // save our setting w/ the list of files copied
@@ -467,6 +469,52 @@ function walkSrdFiles() {
       }
     });
   });
+}
+
+const startMe = () => {
+  var output = fs.createWriteStream('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups.zip');
+  var archive = archiver('zip', {
+    zlib: { level: 9 } // Sets the compression level.
+  });
+
+  // listen for all archive data to be written
+  // 'close' event is fired only when a file descriptor is involved
+  output.on('close', function () {
+    log(archive.pointer() + ' total bytes');
+    log('archiver has been finalized and the output file descriptor has closed.');
+  });
+
+  // This event is fired when the data source is drained no matter what was the data source.
+  // It is not part of this library but rather from the NodeJS Stream API.
+  // @see: https://nodejs.org/api/stream.html#stream_event_end
+  output.on('end', function () {
+    log('Data has been drained');
+  });
+
+  // good practice to catch warnings (ie stat failures and other non-blocking errors)
+  archive.on('warning', function (err) {
+    if (err.code === 'ENOENT') {
+      // log warning
+    } else {
+      // throw error
+      throw err;
+    }
+  });
+
+  // good practice to catch this error explicitly
+  archive.on('error', function (err) {
+    throw err;
+  });
+
+  // pipe archive data to the file
+  archive.pipe(output);
+
+  // append files from a sub-directory and naming it `new-subdir` within the archive
+  archive.directory('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups/', 'DX8_Setups');
+
+  // finalize the archive (ie we are done appending files but streams have to finish yet)
+  // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
+  archive.finalize();
 }
 
 $('#setups, #srd').on('change', function (e) {
@@ -505,7 +553,8 @@ $('#save-settings').on('click', function(e) {
 });
 $('#go').on('click', function(e) {
   e.preventDefault();
-  walkFiles();
+  startMe();
+  // walkFiles();
 });
 $('.savers a').on('click', function(e) {
   e.preventDefault();

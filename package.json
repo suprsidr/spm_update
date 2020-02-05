@@ -31,12 +31,13 @@
     "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
-    "fs-jetpack": "^2.1.0",
     "async": "^1.5.0",
-    "node-zip-dir": "^1.0.2",
-    "walkr": "^0.0.3",
     "bufferhelper": "^0.2.1",
-    "iconv-lite": "^0.4.13"
+    "cross-zip": "^3.0.0",
+    "fs-jetpack": "^2.1.0",
+    "iconv-lite": "^0.4.13",
+    "archiver": "^3.1.1",
+    "walkr": "^0.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -44,7 +45,7 @@
     "babel-loader": "^8.0.0-beta.4",
     "chai": "^4.1.0",
     "css-loader": "^3.1.0",
-    "electron": "^4.0.0",
+    "electron": "^8.0.0",
     "electron-builder": "^21.1.5",
     "electron-mocha": "^8.1.1",
     "friendly-errors-webpack-plugin": "^1.7.0",
