@@ -45,6 +45,35 @@ var files = {}; // files to add to json
 var txt = '';
 var textarea = document.getElementById('thetext');
 
+const zipper = {
+  zip: (dirToZip, outputFile, cb) => {
+    const output = fs.createWriteStream(outputFile);
+    const archive = archiver('zip', {
+      zlib: { level: 9 } // Sets the compression level.
+    });
+    output.on('close', function () {
+      log(archive.pointer() + ' total bytes');
+      cb();
+    });
+    output.on('end', function () {
+      log('Data has been drained');
+    });
+    archive.on('warning', function (err) {
+      if (err.code === 'ENOENT') {
+        log(err);
+      } else {
+        cb(err);
+      }
+    });
+    archive.on('error', function (err) {
+      cb(err);
+    });
+    archive.pipe(output);
+    archive.directory(dirToZip, outputFile.split('.')[0]);
+    archive.finalize();
+  }
+}
+
 Object.prototype.concat = function(o) {
   for (var key in o) {
     if(o.hasOwnProperty(key)) {
@@ -95,10 +124,10 @@ function copy(source, target, cb) {
 fs.readFile(LOCALAPPDATA + '/spm_settings.json', 'utf-8', function (err, contents) {
   if(err || contents === '') {
     settings = {
-      receiverFilesPath: 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SRD Files for Upload/',
-      transmitterFilesPath: 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/',
-      savePaths: ['C:/Users/wayne.patterson/Downloads/forWayne'],
-      exts: ['spm','srm','srd'],
+      receiverFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SRD Files for Upload/',
+      transmitterFilesPath: '//departments/Marketing/Internal/Market Share/Spektrum SPM Files for Upload/',
+      savePaths: ['//cmp02-web01-dev/websites/prodinfo/Files/', '//CMP02-WEB01-TST/websites/prodinfo/Files/', '//cmp02-web01-tst/websites/prodinfo/Files/', '//cmp02-nexus01/websites/prodinfo/Files/'],
+      exts: ['spm', 'srm', 'srd'],
       //tfsPath: 'C:\\\\xampp\\htdocs\\StaticCMSContent\\media\\scripts\\',
       dirs: ['DX8_Setups', 'DXe_Setups', 'Gen2_Setups'],
       transmitters: {
@@ -208,10 +237,13 @@ function walkFiles() {
     .start(function(err) {  // this acts more like a complete than start - but also triggers execution??
 
       log('zipping: ' + settings.dirs[idx]);
-      console.log('213', settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip');
 
-      zipper.zip('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups', 'C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups.zip').then(function() {
-
+      zipper.zip(settings.transmitterFilesPath + settings.dirs[idx], settings.transmitterFilesPath + settings.dirs[idx] + '.zip', function(err) {
+        if(err) {
+          spinner.spin(false);
+          log(err);
+          return;
+        }
         log(settings.dirs[idx] + '.zip created');
 
   		  idx++;
@@ -306,10 +338,7 @@ function walkFiles() {
             });
           });
   		  }
-  	  }).catch(function(err) {
-        spinner.spin(false);
-  		  log('error zipping catch: ' + err);
-  	  });
+  	  })
 
     });
 }
@@ -440,9 +469,12 @@ function walkSrdFiles() {
       log('All Done');
     });
 
-    log(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip');
-
-    zipper.zip(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip').then(function () {
+    zipper.zip(settings.receiverFilesPath, settings.receiverFilesPath + 'AS3X_receiver_config_files.zip', function (err) {
+      if(err) {
+        spinner.spin(false);
+        log(err);
+        return;
+      }
       savePaths.forEach(function (path) {
         copy(settings.receiverFilesPath + 'AS3X_receiver_config_files.zip', path + 'SPM/' + 'AS3X_receiver_config_files.zip', function (err) {
           if (err) {
@@ -452,10 +484,7 @@ function walkSrdFiles() {
           }
         });
       });
-    }).catch(function (err) {
-      spinner.spin(false);
-      log('line 447 error: ' + err);
-    });
+    })
     // save our setting w/ the list of files copied
     settings.filesCopied = settings.filesCopied.concat(filesToCopy);
     fs.writeFile(path.join(LOCALAPPDATA, '/spm_settings.json'), JSON.stringify(settings), function (err) {
@@ -469,52 +498,6 @@ function walkSrdFiles() {
       }
     });
   });
-}
-
-const startMe = () => {
-  var output = fs.createWriteStream('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups.zip');
-  var archive = archiver('zip', {
-    zlib: { level: 9 } // Sets the compression level.
-  });
-
-  // listen for all archive data to be written
-  // 'close' event is fired only when a file descriptor is involved
-  output.on('close', function () {
-    log(archive.pointer() + ' total bytes');
-    log('archiver has been finalized and the output file descriptor has closed.');
-  });
-
-  // This event is fired when the data source is drained no matter what was the data source.
-  // It is not part of this library but rather from the NodeJS Stream API.
-  // @see: https://nodejs.org/api/stream.html#stream_event_end
-  output.on('end', function () {
-    log('Data has been drained');
-  });
-
-  // good practice to catch warnings (ie stat failures and other non-blocking errors)
-  archive.on('warning', function (err) {
-    if (err.code === 'ENOENT') {
-      // log warning
-    } else {
-      // throw error
-      throw err;
-    }
-  });
-
-  // good practice to catch this error explicitly
-  archive.on('error', function (err) {
-    throw err;
-  });
-
-  // pipe archive data to the file
-  archive.pipe(output);
-
-  // append files from a sub-directory and naming it `new-subdir` within the archive
-  archive.directory('C:/Users/wayne.patterson/Downloads/forWayne/Spektrum SPM Files for Upload/DX8_Setups/', 'DX8_Setups');
-
-  // finalize the archive (ie we are done appending files but streams have to finish yet)
-  // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
-  archive.finalize();
 }
 
 $('#setups, #srd').on('change', function (e) {
@@ -553,8 +536,7 @@ $('#save-settings').on('click', function(e) {
 });
 $('#go').on('click', function(e) {
   e.preventDefault();
-  startMe();
-  // walkFiles();
+  walkFiles();
 });
 $('.savers a').on('click', function(e) {
   e.preventDefault();
